@@ -5,8 +5,6 @@ const LoginForm = ({setUserInfo}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
- 
-
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -1,0 +1,52 @@
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-body {
+    padding: 2rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1.1rem;
+}
+
+.img-fluid {
+    border-radius: 10px;
+    max-width: 500px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+
+}
+
+.form-control-sm {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    width: 80%;
+    margin-bottom: 1rem;
+}
+
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+
+}
+
+.alert {
+    margin-bottom: 1rem;
+}
