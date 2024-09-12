@@ -5,8 +5,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import JewelleryList from './components/jewellery/JewelleryList';
 import JewelleryDetail from './components/jewellery/JewelleryDetail';
+
+
+import OrderList from './components/order/OrderList';
+import OrderDetail from './components/order/OrderDetail';
+
 import CartDetail from './components/cart/CartDetail';
+
 import LoginForm from './components/auth/LoginForm';
+import SignupForm from './components/auth/SignupForm';
 import NavBar from "./components/partials/NavBar";
 
 const App = () => {
@@ -31,11 +38,15 @@ const App = () => {
     <>
     <NavBar userInfo={userInfo} onLogout={handleLogout} />
     <Routes>
+      <Route path="/orders" element={<OrderList/>}/>
+      <Route path="/orders/:id" element={<OrderDetail/>} />
       <Route path="/jewelleries" element={<JewelleryList />}/>
-      <Route path="/jewellery/:id" element={<JewelleryDetail />} />
+      <Route path="/jewellery/:id" element={<JewelleryDetail userInfo={userInfo}/>} />
       <Route path="/cart" element={<CartDetail/>} />
       <Route path="/login" element={<LoginForm setUserInfo={setUserInfo}/>} />
+      <Route path="/signup" element={<SignupForm/>} />
     </Routes>
+    
     </>
   );
 };

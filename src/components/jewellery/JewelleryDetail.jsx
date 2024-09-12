@@ -5,7 +5,7 @@ import { jewelleryDetail } from '../../services/jewelleryService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../css/JewelleryDetail.css'; 
 
-const JewelleryDetails = () => {
+const JewelleryDetails = ({ userInfo }) => {
   const { id } = useParams(); 
   const [jewellery, setJewellery] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,8 +26,8 @@ const JewelleryDetails = () => {
           setJewellery(data);
         }
       } catch (err) {
-          console.error('Error fetching data:', err);
-          setError(err.message || 'An error occurred while fetching data.');
+        console.error('Error fetching data:', err);
+        setError(err.message || 'An error occurred while fetching data.');
       } finally {
         setLoading(false);
       }
@@ -37,6 +37,11 @@ const JewelleryDetails = () => {
   }, [id]);
 
   const handleAddToCart = async () => {
+    if (!userInfo) {
+      navigate('/login');
+      return;
+    }
+
     if (!jewellery || quantity < 1) {
       setError('Invalid quantity or jewellery details');
       return;
@@ -74,7 +79,9 @@ const JewelleryDetails = () => {
       {successMessage && !goToCart && (
         <div className="alert alert-success">
           {successMessage}
-          <div>Would you like to <Link to="/cart" className="btn btn-primary">go to your cart</Link>?</div>
+          <div>
+            Would you like to <Link to="/cart" className="btn btn-primary">go to your cart</Link>?
+          </div>
         </div>
       )}
       {jewellery ? (
@@ -84,31 +91,37 @@ const JewelleryDetails = () => {
               <h1 className="card-title">{jewellery.name}</h1>
               <p className="card-text"><strong>Description:</strong> {jewellery.description}</p>
               <p className="card-text"><strong>Price:</strong> {jewellery.price} BD</p>
-              <label htmlFor="quantity" className="form-label">Quantity:</label>
-              <input
-                id="quantity"
-                type="number"
-                value={quantity}
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value >= 1 && value <= jewellery.stock) {
-                    setQuantity(value);
-                    setError(''); 
-                  } else if (value > jewellery.stock) {
-                    setQuantity(jewellery.stock);
-                    setError('Quantity adjusted to available stock.');
-                  } else if (value < 1) {
-                    setQuantity(1); 
-                    setError('Quantity cannot be less than 1.');
-                  }
-                }} 
-                min="1"
-                max={jewellery.stock} 
-                className="form-control form-control-sm"
-              />
-              <div className="mt-3"> 
-                <button onClick={handleAddToCart} className="btn btn-primary">Add to Cart</button>
-              </div>
+              {userInfo ? (
+                <>
+                  <label htmlFor="quantity" className="form-label">Quantity:</label>
+                  <input
+                    id="quantity"
+                    type="number"
+                    value={quantity}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 1 && value <= jewellery.stock) {
+                        setQuantity(value);
+                        setError(''); 
+                      } else if (value > jewellery.stock) {
+                        setQuantity(jewellery.stock);
+                        setError('Quantity adjusted to available stock.');
+                      } else if (value < 1) {
+                        setQuantity(1); 
+                        setError('Quantity cannot be less than 1.');
+                      }
+                    }} 
+                    min="1"
+                    max={jewellery.stock} 
+                    className="form-control form-control-sm"
+                  />
+                  <div className="mt-3"> 
+                    <button onClick={handleAddToCart} className="btn btn-primary">Add to Cart</button>
+                  </div>
+                </>
+              ) : (
+                <button onClick={() => navigate('/login')}className="btn btn-primary">Add to Cart</button>
+              )}
             </div>
             <img src={jewellery.image} alt={jewellery.name} className="img-fluid ms-3" /> 
           </div>

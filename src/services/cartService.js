@@ -105,4 +105,26 @@ const addToCart = async (cartId, jewelleryId, quantity) => {
     }
 };
 
-export { fetchCart, updateQuantity, removeFromCart, deleteFromCart, addToCart };
+const clearCart = async () => {
+    try {
+        const res = await fetch(`${BASE_URL}clear/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token()}`,
+            },
+        });
+
+        if (!res.ok) {
+            throw new Error(`Failed to clear cart:${res.status}`);
+        }
+
+        return res;
+    } catch (error) {
+        console.error('Error clearing cart:', error.message);
+        throw error;
+    }
+};
+
+
+export { fetchCart, updateQuantity, removeFromCart, deleteFromCart, addToCart, clearCart };

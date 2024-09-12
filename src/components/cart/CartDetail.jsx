@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { fetchCart, updateQuantity, removeFromCart, deleteFromCart } from '../../services/cartService'; 
+import { fetchCart, updateQuantity, removeFromCart, deleteFromCart, clearCart } from '../../services/cartService'; 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import { useNavigate } from 'react-router-dom'; 
+import { placeOrder } from '../../services/orderService'; 
 
 const CartDetail = () => {
   const [cartItems, setCartItems] = useState([]);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [placingOrder, setPlacingOrder] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadCart = async () => {
       try {
         const items = await fetchCart();
-        setCartItems(items);
+        console.log('Cart data:', items); 
+        setCartItems(items || []);
       } catch (error) {
         setError('Failed to load cart data.');
       }
@@ -98,10 +102,39 @@ const CartDetail = () => {
     navigate(`/jewellery/${id}`);
   };
 
+  const handlePlaceOrder = async () => {
+    setPlacingOrder(true);
+    try {
+      const orderData = {
+        cart: cartItems.map(item => ({
+          jewellery_id: item.jewellery_id,
+          quantity: item.quantity,
+        })),
+      };
+
+      console.log('Placing order with data:', orderData);
+
+      await placeOrder(orderData);
+
+      await clearCart();
+
+      setCartItems([]); 
+      setSuccessMessage('Order placed successfully!');
+      navigate('/orders');
+  
+    } catch (error) {
+      setError('Failed to place order. Please try again.');
+      console.error('Error placing order:', error.message);
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Your Cart</h1>
       {error && <div className="alert alert-danger">{error}</div>}
+      {successMessage && <div className="alert alert-success">{successMessage}</div>}
       {cartItems.length === 0 ? (
         <p>Your cart is empty.</p>
       ) : (
@@ -142,6 +175,14 @@ const CartDetail = () => {
           ))}
         </ul>
       )}
+
+      <button
+        className="btn btn-primary"
+        onClick={handlePlaceOrder}
+        disabled={placingOrder}
+      >
+        {placingOrder ? 'Placing Order...' : 'Place Order'}
+      </button>
     </div>
   );
 };
