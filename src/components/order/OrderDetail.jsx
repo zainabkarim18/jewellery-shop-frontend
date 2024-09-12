@@ -40,7 +40,7 @@ const OrderDetails = () => {
 
     return (
         <div className="container mt-4">
-            <h1 className="mb-4">Bill</h1>
+            <h1 className="mb-4">Bill Details</h1>
             {order ? (
                 <div>
                     <p><strong>Order ID:</strong> {order.id}</p>
